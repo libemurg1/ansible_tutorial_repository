@@ -1,0 +1,19 @@
+cloud:
+  hosts:
+    cloud01:
+      ansible_host: isppme.com 
+      ansible_port: 22
+      ansible_user: isppme
+    cloud02:
+      ansible_host: learn.isppme.com
+      ansible_port: 22
+      ansible_user: college
+    cloud03:
+      ansible_host: 149.28.62.189
+      ansible_port: 22
+      ansible_user: root
+  vars:
+    ansible_user: root
+      
+      
+
