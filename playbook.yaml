@@ -1,10 +1,33 @@
-- name: My Playbook
+--
+- name: Monitor
   hosts: cloud
+  become: yes  #run priviledged
 
   tasks:
-   - name: Ping my hosts
-     ansible.builtin.ping:
+    - name: install prometheus node exporter
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - prometheus-node-exporter
+        - ping 
 
-   - name: Print message
-     ansible.builtin.debug:
-       msg: Hello world
+    - name: configure prometheus
+      systemd:
+        name: prometheus-node-exporter
+        enabled: yes
+        state: started
+
+    - name: check apache logs
+      shell: tail -n 100 /var/log/apache2/access.log
+      register: apache_logs
+
+    - name: create backup
+      command: cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.bak
+      changed_when: false
+
+    - name: notify admin
+      mail:
+        subject: "Backup Complete"
+        body: "Backup of configuration complete"
+        to: admin@isppme.com
